@@ -1,0 +1,6 @@
+*.img
+*.log
+*.pid
+*.qcow2
+*.pcap
+netmap
