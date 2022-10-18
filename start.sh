@@ -54,6 +54,10 @@ else
     exit 1
 fi
 
+echo "Set IPs in VMs"
+echo "VM1: sudo ifconfig ens4 up"
+echo "VM1: sudo ifconfig ens4 10.10.0.1$NUM/24"
+
 # Boot the vm
 sudo qemu-system-x86_64 \
 "$CUR_PATH"/"$VM_NAME".img \

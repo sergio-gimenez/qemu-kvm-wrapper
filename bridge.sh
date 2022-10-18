@@ -27,15 +27,20 @@ if [ "$1" == "up" ]; then
     # Control Plane Bridge
     sudo brctl addbr br0
     sudo ip link set br0 up
-    # ip addr add 10.10.0.1/24 dev br0
+    ip addr add 10.10.0.1/24 dev br0
     
     sudo ip link set vm1.cp up
-    # ip addr add 10.10.0.11/24 dev vm1.cp
+    ip addr add 10.10.0.11/24 dev vm1.cp
     sudo brctl addif br0 vm1.cp
     
     sudo ip link set vm2.cp up
-    # ip addr add 10.10.0.12/24 dev vm2.cp
+    ip addr add 10.10.0.12/24 dev vm2.cp
     sudo brctl addif br0 vm2.cp
+
+    # We need to configure your firewall to allow these packets to flow back and forth over the bridge
+    sudo iptables -A INPUT -i br0 -j ACCEPT
+    sudo iptables -A INPUT -i vm1.cp -j ACCEPT
+    sudo iptables -A FORWARD -i br0 -j ACCEPT
     
     brctl show
 fi
