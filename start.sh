@@ -55,8 +55,9 @@ else
 fi
 
 echo "Set IPs in VMs"
-echo "VM1: sudo ifconfig ens4 up"
-echo "VM1: sudo ifconfig ens4 10.10.0.1$NUM/24"
+echo "ssh ubuntu@localhost -p 202$NUM"
+echo "(vm shell) sudo ifconfig ens4 up"
+echo "(vm shell) sudo ifconfig ens4 10.10.0.1$NUM/24"
 
 # Boot the vm
 sudo qemu-system-x86_64 \
