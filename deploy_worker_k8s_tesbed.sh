@@ -10,8 +10,9 @@ if [[ ($# == "--help") || $# == "-h" ]]; then
     exit 0
 fi
 
+set -x
 # Install ifconfig and c compiler
-sudo apt-get install net-tools build-essential
+sudo apt-get install net-tools build-essential -y
 
 # Set up the interface
 sudo ifconfig ens4 up
