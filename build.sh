@@ -117,4 +117,17 @@ sudo qemu-system-x86_64 \
 -hdb "$CUR_PATH"/seed_"$VM_NAME".img \
 -m 8G --enable-kvm -pidfile $VM_NAME.pid \
 -serial file:"$VM_NAME".log \
--device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22 \
+-device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22 &
+
+if $VM_NAME '==' "vm1"; then
+    sshpass -p "password" ssh -o StrictHostKeyChecking=no ubuntu@localhost -p 2021 sudo sed -i "s/ubuntu/master/g" /etc/hostname
+    elif $VM_NAME '==' "vm2"; then
+    sshpass -p "password" ssh -o StrictHostKeyChecking=no ubuntu@localhost -p 2022 sudo sed -i "s/ubuntu/worker/g" /etc/hostname
+fi
+
+sudo shutdown -P now
+
+echo "VM $VM_NAME has been properly built. Now start it running .start $VM_NAME tap"
+echo "You can connect to it with: ssh ubuntu@localhost -p 202$NUM"
+
+
