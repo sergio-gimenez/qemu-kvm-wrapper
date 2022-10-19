@@ -123,7 +123,7 @@ echo "Waiting the VM to boot..."
 sleep 20
 
 
-echo "VM $VM_NAME has been properly built. Now start it running .start $VM_NAME tap"
+echo "VM $VM_NAME has been properly built"
 echo "You can connect to it with: ssh ubuntu@localhost -p 202$NUM"
 
 
