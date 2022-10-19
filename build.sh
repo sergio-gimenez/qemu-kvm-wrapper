@@ -120,7 +120,7 @@ sudo qemu-system-x86_64 \
 -device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22 &
 
 echo "Waiting the VM to boot..."
-sleep 10
+sleep 20
 
 
 echo "VM $VM_NAME has been properly built. Now start it running .start $VM_NAME tap"

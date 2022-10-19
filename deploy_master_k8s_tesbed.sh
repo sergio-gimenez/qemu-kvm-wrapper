@@ -10,8 +10,6 @@ if [[ ($# == "--help") || $# == "-h" ]]; then
     exit 0
 fi
 
-set -x
-
 # if hostname is not "master"
 if [ "$(hostname)" != "master" ]; then
     echo "Changing hostname to master, please start again the VM and run this script again"
@@ -19,6 +17,8 @@ if [ "$(hostname)" != "master" ]; then
     sudo sed -i "s/ubuntu/master/g" /etc/hostname
     sudo shutdown -P now
 fi
+
+set -x
 
 # Install ifconfig and c compiler
 sudo apt-get install net-tools build-essential -y
