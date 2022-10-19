@@ -10,6 +10,14 @@ if [[ ($# == "--help") || $# == "-h" ]]; then
     exit 0
 fi
 
+# if hostname is not "master"
+if [ "$(hostname)" != "worker" ]; then
+    echo "Changing hostname to worker, please start again the VM and run this script again"
+    echo "That way we avoid k8s nodes to have the same name"
+    sudo sed -i "s/ubuntu/worker/g" /etc/hostname
+    sudo shutdown -P now
+fi
+
 set -x
 # Install ifconfig and c compiler
 sudo apt-get install net-tools build-essential -y
