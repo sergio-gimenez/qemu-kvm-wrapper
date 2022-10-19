@@ -62,7 +62,8 @@ echo "(vm shell) sudo ifconfig ens4 10.10.0.1$NUM/24"
 # Boot the vm
 sudo qemu-system-x86_64 \
 "$CUR_PATH"/"$VM_NAME".img \
--m 2G --enable-kvm -pidfile $VM_NAME.pid \
+-m 8G --enable-kvm -pidfile $VM_NAME.pid \
+-cpu host -smp 4 \
 -serial file:"$VM_NAME".log \
 -device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22,hostfwd=tcp::300"$NUM"-:3000 \
 -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME",id=data1"$IFUP_SCRIPTS" &
