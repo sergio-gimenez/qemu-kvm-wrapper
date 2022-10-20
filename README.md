@@ -60,7 +60,7 @@ Let's build the VM `vm2`:
 Wait a bit, and ssh into it:
 
 ```bash
-./build vm2 tap
+ssh ubuntu@localhost -p 2022
 ```
 
 Inside the vm, clone the repo and run the script for deploying a k8s worker node:
