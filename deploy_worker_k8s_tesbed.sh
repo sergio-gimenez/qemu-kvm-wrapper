@@ -100,7 +100,21 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
 
+####################
+# CNI installation #
+####################
 
+# Install RINA CNI
+git clone https://github.com/sergio-gimenez/rina-cni-plugin.git
+
+# Copy the RINA plugin into CNI plugins directory
+sudo cp rina-cni-plugin/rina-cni /opt/cni/bin
+
+# Copy the custom configuration file
+sudo cp rina-cni-plugin/demo/my-cni-demo_worker.conf /etc/cni/net.d/
+
+# Set few Iptables rules to enable propper connectivity
+sudo rina-cni-plugin/demo/init_worker.sh
 
 
 

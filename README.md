@@ -154,3 +154,6 @@ worker   NotReady   <none>          20s   v1.25.3   10.10.0.12    <none>        
 
 ```
 
+<!-- Great, the `control-plane` node now can see the worker node. However, we can see that both nodes are not ready yet (`NotReady` in `STATUS`). This is because there is no CNI installed yet. Let's install the custom RINA CNI Plugin: -->
+
+
