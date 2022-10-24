@@ -20,7 +20,7 @@ fi
 
 set -x
 # Install ifconfig and c compiler
-sudo apt-get install net-tools build-essential -y
+sudo apt-get install net-tools build-essential jq bridge-utils-y
 
 # Set up the interface
 sudo ifconfig ens4 up

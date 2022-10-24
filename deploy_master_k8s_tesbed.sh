@@ -27,10 +27,6 @@ sudo apt-get install net-tools build-essential jq bridge-utils -y
 sudo ifconfig ens4 up
 sudo ifconfig ens4
 
-
-# Install ifconfig and c compiler
-sudo apt-get install net-tools build-essential -y
-
 # Set up the interface
 sudo ifconfig ens4 up
 sudo ifconfig ens4 10.10.0.11/24
