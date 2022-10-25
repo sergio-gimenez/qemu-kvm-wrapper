@@ -141,17 +141,16 @@ This node has joined the cluster:
 * Certificate signing request was sent to apiserver and a response was received.
 * The Kubelet was informed of the new secure connection details.
 
-Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+Run 'kubectl get nodes -o wide' on the control-plane to see this node join the cluster.
 ```
 
 Also, doublecheck that the nodes are up and running:
 
 ```bash
 ubuntu@master:~$ kubectl get nodes -o wide
-NAME     STATUS     ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
-master   NotReady   control-plane   14m   v1.25.3   10.10.0.11    <none>        Ubuntu 20.04.5 LTS   5.4.0-131-generic   containerd://1.5.9
-worker   NotReady   <none>          20s   v1.25.3   10.10.0.12    <none>        Ubuntu 20.04.5 LTS   5.4.0-131-generic   containerd://1.5.9
-
+NAME     STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+master   Ready    control-plane   65s   v1.25.3   10.10.0.11    <none>        Ubuntu 20.04.5 LTS   5.4.0-131-generic   containerd://1.5.9
+worker   Ready    <none>          5s    v1.25.3   10.10.0.12    <none>        Ubuntu 20.04.5 LTS   5.4.0-131-generic   containerd://1.5.9
 ```
 
 <!-- Great, the `control-plane` node now can see the worker node. However, we can see that both nodes are not ready yet (`NotReady` in `STATUS`). This is because there is no CNI installed yet. Let's install the custom RINA CNI Plugin: -->
