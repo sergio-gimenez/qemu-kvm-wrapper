@@ -38,8 +38,9 @@ if [ "$1" == "up" ]; then
     sudo brctl addif br0 vm2.cp
 
     # We need to configure your firewall to allow these packets to flow back and forth over the bridge
-    sudo iptables -A INPUT -i br0 -j ACCEPT
     sudo iptables -A INPUT -i vm1.cp -j ACCEPT
+    sudo iptables -A INPUT -i vm2.cp -j ACCEPT
+    sudo iptables -A INPUT -i br0 -j ACCEPT
     sudo iptables -A FORWARD -i br0 -j ACCEPT
     
     brctl show
