@@ -156,3 +156,36 @@ worker   Ready    <none>          5s    v1.25.3   10.10.0.12    <none>        Ub
 <!-- Great, the `control-plane` node now can see the worker node. However, we can see that both nodes are not ready yet (`NotReady` in `STATUS`). This is because there is no CNI installed yet. Let's install the custom RINA CNI Plugin: -->
 
 
+## Deploying a demo application
+
+![rina_k8s_demo](img/rina_k8s_demo.png)
+
+In order to deploy the demo, run the following:
+
+```bash
+kubectl apply -f rina-cni-plugin/demo/demo.yaml
+```
+
+Make sure that all the pods have their IPs:
+
+```bash
+ubuntu@master:~$ kubectl get pods -o wide
+NAME      READY   STATUS    RESTARTS      AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+alpine1   1/1     Running   1 (11m ago)   45m   10.240.0.4   master   <none>           <none>
+nginx1    1/1     Running   0             45m   10.240.0.6   master   <none>           <none>
+nginx2    1/1     Running   0             45m   10.240.1.2   worker   <none>           <none>
+```
+
+And that there is pod-to-pod connectivity in the same node or a remote node:
+
+```bash
+ubuntu@master:~$ kubectl exec alpine1 -- ping 10.240.0.6
+PING 10.240.0.6 (10.240.0.6): 56 data bytes
+64 bytes from 10.240.0.6: seq=0 ttl=64 time=0.304 ms
+```
+
+```bash
+ubuntu@master:~$ kubectl exec alpine1 -- ping 10.240.1.2
+PING 10.240.1.2 (10.240.1.2): 56 data bytes
+64 bytes from 10.240.1.2: seq=0 ttl=62 time=2.332 ms
+```
