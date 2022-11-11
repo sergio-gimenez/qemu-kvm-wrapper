@@ -14,13 +14,14 @@ Let's first build the master VM:
 
 This will download for you the ubuntu 20.04 cloud image, create a VM, and install the necessary packages.
 
-Let's ssh into the VM and initialize the master node:
+Wait a bit until it finishes building the VM and then let's ssh into the VM and initialize the master node:
 
 ```bash
-ssh ubuntu@localhost -p 2021
+VM vm1 has been properly built
+You can connect to it with: ssh ubuntu@localhost -p 2021
 ```
 
-> The credentials are stored in `user-data.yaml`. This file is read by cloud-init when the VM is created.
+> The credentials are stored in `user-data.yaml`. **This** file is read by cloud-init when the VM is created.
 
 Inside the vm, clone the repo and run the script for deploying a k8s master node:
 
@@ -37,7 +38,7 @@ Now, let's boot again the VM:
 ./start.sh vm1 tap
 ```
 
-And ssh into it:
+Wait a few seconds to make sure it starts properly and then ssh into it:
 
 ```bash
 ssh ubuntu@localhost -p 2021
@@ -57,7 +58,7 @@ Let's build the VM `vm2`:
 ./build.sh vm2 tap
 ```
 
-Wait a bit, and ssh into it:
+Like before, wait a bit, and then when you see the prompt, ssh into it:
 
 ```bash
 ssh ubuntu@localhost -p 2022
@@ -87,7 +88,7 @@ ssh ubuntu@localhost -p 2022
 Inside the vm, run the script to deploy ythe k8s node again:
 
 ```bash
-(vm) qemu-kvm-wrapper/deploy_master_k8s_tesbed.sh
+(vm) qemu-kvm-wrapper/deploy_worker_k8s_tesbed.sh
 ```
 
 Now, wait till k8s is installed in both VMs.
