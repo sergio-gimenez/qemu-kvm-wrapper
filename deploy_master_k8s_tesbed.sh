@@ -76,13 +76,6 @@ sudo apt-get install -y containerd
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
 
-# Set the cgroup driver for runc to systemd
-
-# Modify the configuration file, setting SystemCgroup from false to true under
-# [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-# section (around line 112) :
-# TODO sudo vi  /etc/containerd/config.toml
-
 # Restart containerd with the new configuration
 sudo systemctl restart containerd
 
