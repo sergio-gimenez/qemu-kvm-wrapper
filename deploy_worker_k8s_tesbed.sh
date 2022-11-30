@@ -29,14 +29,14 @@ sudo ifconfig ens4 up
 sudo ifconfig ens4 10.10.0.12/24
 
 # Compile and load netmap module
-git clone https://github.com/luigirizzo/netmap.git
-cd netmap || exit
-./configure --no-drivers
-make
-sudo make install
-sudo depmod -a
-sudo modprobe netmap
-cd ..
+# git clone https://github.com/luigirizzo/netmap.git
+# cd netmap || exit
+# ./configure --no-drivers
+# make
+# sudo make install
+# sudo depmod -a
+# sudo modprobe netmap
+# cd ..
 
 ###########################
 # Containerd Installation #

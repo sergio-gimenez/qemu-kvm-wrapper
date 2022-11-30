@@ -24,11 +24,6 @@ set -x
 sudo apt-get update
 sudo apt-get install net-tools build-essential jq bridge-utils -y
 
-
-# Set up the interface
-sudo ifconfig ens4 up
-sudo ifconfig ens4
-
 # Set up the interface
 sudo ifconfig ens4 up
 sudo ifconfig ens4 10.10.0.11/24
