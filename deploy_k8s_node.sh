@@ -107,13 +107,16 @@ sudo apt-get update
 sudo apt-get install -y kubelet=$K8S_VERSION kubeadm=$K8S_VERSION kubectl=$K8S_VERSION
 sudo apt-mark hold kubelet kubeadm kubectl
 
-# Initialize the master node with kubeadm, specifiying apiserver in ens4
-sudo kubeadm init --apiserver-advertise-address="$node_ip" --pod-network-cidr=10.240.0.0/16
-
-# Once kubeadm has bootstraped the K8s cluster, set proper access to the cluster from the CP/master node
-mkdir -p "$HOME"/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+if [ "$node_name" == "master" ]; then
+    # Initialize the cluster
+    # Initialize the master node with kubeadm, specifiying apiserver in ens4
+    sudo kubeadm init --apiserver-advertise-address="$node_ip" --pod-network-cidr=10.240.0.0/16
+    
+    # Once kubeadm has bootstraped the K8s cluster, set proper access to the cluster from the CP/master node
+    mkdir -p "$HOME"/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+fi
 
 # This is in order to be able to create pods in the control-plane node
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
