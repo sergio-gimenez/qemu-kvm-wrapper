@@ -70,7 +70,8 @@ sudo apt-get install -y containerd
 # at /etc/containerd/config.toml)
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
-sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/' /etc/containerd/config.toml
+# sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/' /etc/containerd/config.toml
+sudo rm /etc/containerd/config.toml
 
 # Restart containerd with the new configuration
 sudo systemctl restart containerd
@@ -90,7 +91,7 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
 
 # install kubelet, kubeadm and kubectl, and pin their version
 sudo apt-get update
-sudo apt-get install -y kubelet=1.24.8-00 kubeadm=1.24.8-00 kubectl=1.24.8-00
+sudo apt-get install -y kubelet=1.24.0-00 kubeadm=1.24.0-00 kubectl=1.24.0-00
 sudo apt-mark hold kubelet kubeadm kubectl
 
 
