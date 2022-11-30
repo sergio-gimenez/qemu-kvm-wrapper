@@ -20,15 +20,13 @@ if [[ ($# == "--help") || $# == "-h" ]]; then
     exit 0
 fi
 
-# if hostname is not "master" nor "worker"
-# if [ "$(hostname)" != "master" ] && [ "$(hostname)" != "worker" ]; then
-#     echo "Changing hostname to master, please start again the VM and run this script again"
-#     echo "That way we avoid k8s nodes to have the same name"
-#     sudo sed -i "s/ubuntu/master/g" /etc/hostname
-# fi
-sudo sed -i "s/ubuntu/$node_name/g" /etc/hostname
+# Change VM hostname according to either "master" or "worker"
+sudo hostname -b "$node_name"
 
 set -x
+###########################
+# Install Prerequisites   #
+###########################
 
 # Install ifconfig, a c compiler, jq, and bridge
 sudo apt-get update
@@ -38,17 +36,6 @@ sudo apt-get install net-tools build-essential jq bridge-utils -y
 sudo ifconfig ens4 up
 node_ip="10.10.0.1$one_digit_id"
 sudo ifconfig ens4 "$node_ip/24"
-
-# # Compile and load netmap module
-
-# git clone https://github.com/luigirizzo/netmap.git
-# cd netmap || exit
-# ./configure --no-drivers
-# make
-# sudo make install
-# sudo depmod -a
-# sudo modprobe netmap
-# cd ..
 
 ###########################
 # Containerd Installation #
@@ -132,7 +119,7 @@ git clone https://github.com/sergio-gimenez/rina-cni-plugin.git
 sudo cp rina-cni-plugin/rina-cni /opt/cni/bin
 
 # Copy the custom configuration file
-sudo cp rina-cni-plugin/demo/my-cni-demo_master.conf /etc/cni/net.d/
+sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
 
 # Set few Iptables rules to enable propper connectivity
-sudo rina-cni-plugin/demo/init_master.sh
+sudo rina-cni-plugin/demo/init_$node_name.sh
