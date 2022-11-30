@@ -15,7 +15,7 @@ if [ "$(hostname)" != "worker" ]; then
     echo "Changing hostname to worker, please start again the VM and run this script again"
     echo "That way we avoid k8s nodes to have the same name"
     sudo sed -i "s/ubuntu/worker/g" /etc/hostname
-    sudo shutdown -P now
+    # sudo shutdown -P now
 fi
 
 set -x
