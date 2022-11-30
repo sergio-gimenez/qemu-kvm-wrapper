@@ -91,7 +91,7 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
 
 # install kubelet, kubeadm and kubectl, and pin their version
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm=1.24.8 kubectl
+sudo apt-get install -y kubelet=1.24.8-00 kubeadm=1.24.8-00 kubectl=1.24.8-00
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # Initialize the master node with kubeadm, specifiying apiserver in ens4
