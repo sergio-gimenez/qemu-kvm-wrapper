@@ -4,6 +4,9 @@ display_usage() {
     echo -e "\nUsage: $0 [vm1 vm2 vm3] [tap ptnet]\n"
 }
 
+if [[ ("$2" == "start" || "$2" == "setup-net") ]]; then
+
+
 node_name=$1
 one_digit_id=$2
 K8S_VERSION=1.25.0-00

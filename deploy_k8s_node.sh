@@ -4,7 +4,13 @@ display_usage() {
     echo -e "\nUsage: $0 [master worker] [1 2]\n"
 }
 
-node_name=$1
+if [[ ("$1" == "master" || "$1" == "worker") ]]; then
+    node_name=$1
+else
+    echo "Please specify the node name as master or worker"
+    exit 1
+fi
+
 one_digit_id=$2
 K8S_VERSION=1.25.0-00
 
