@@ -72,7 +72,6 @@ sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
 containerd config default > /etc/containerd/config.toml
 sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/' /etc/containerd/config.toml
-sed -i 's/snapshotter = "overlayfs"/snapshotter = "native"/' /etc/containerd/config.toml
 
 # Restart containerd with the new configuration
 sudo systemctl restart containerd
@@ -92,7 +91,7 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
 
 # install kubelet, kubeadm and kubectl, and pin their version
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet kubeadm=1.24.8 kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # Initialize the master node with kubeadm, specifiying apiserver in ens4
