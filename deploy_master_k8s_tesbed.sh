@@ -33,15 +33,15 @@ sudo ifconfig ens4
 sudo ifconfig ens4 up
 sudo ifconfig ens4 10.10.0.11/24
 
-# Compile and load netmap module
-git clone https://github.com/luigirizzo/netmap.git
-cd netmap || exit
-./configure --no-drivers
-make
-sudo make install
-sudo depmod -a
-sudo modprobe netmap
-cd ..
+# # Compile and load netmap module
+# git clone https://github.com/luigirizzo/netmap.git
+# cd netmap || exit
+# ./configure --no-drivers
+# make
+# sudo make install
+# sudo depmod -a
+# sudo modprobe netmap
+# cd ..
 
 ###########################
 # Containerd Installation #
@@ -75,8 +75,7 @@ sudo apt-get install -y containerd
 # at /etc/containerd/config.toml)
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
-
-rm /etc/containerd/config.toml
+sudo rm /etc/containerd/config.toml
 
 # Restart containerd with the new configuration
 sudo systemctl restart containerd

@@ -70,6 +70,7 @@ sudo apt-get install -y containerd
 # at /etc/containerd/config.toml)
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
+sudo rm /etc/containerd/config.toml
 
 # Restart containerd with the new configuration
 sudo systemctl restart containerd
