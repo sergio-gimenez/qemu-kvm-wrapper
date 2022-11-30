@@ -1,7 +1,7 @@
 #!/bin/bash
 
 display_usage() {
-    echo -e "\nUsage: $0 [vm1 vm2 vm3] [tap ptnet]\n"
+    echo -e "\nUsage: $0 [master worker] [1 2]\n"
 }
 
 node_name=$1
