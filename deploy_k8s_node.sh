@@ -103,10 +103,9 @@ if [ "$node_name" == "master" ]; then
     mkdir -p "$HOME"/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
     sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    # This is in order to be able to create pods in the control-plane node
+    kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 fi
-
-# This is in order to be able to create pods in the control-plane node
-kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 ####################
 # CNI installation #
