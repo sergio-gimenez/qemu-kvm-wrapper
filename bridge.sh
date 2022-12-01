@@ -36,10 +36,15 @@ if [ "$1" == "up" ]; then
     sudo ip link set vm2.cp up
     ip addr add 10.10.0.12/24 dev vm2.cp
     sudo brctl addif br0 vm2.cp
-
+    
+    sudo ip link set vm3.cp up
+    ip addr add 10.10.0.13/24 dev vm2.cp
+    sudo brctl addif br0 vm3.cp
+    
     # We need to configure your firewall to allow these packets to flow back and forth over the bridge
     sudo iptables -A INPUT -i vm1.cp -j ACCEPT
     sudo iptables -A INPUT -i vm2.cp -j ACCEPT
+    sudo iptables -A INPUT -i vm3.cp -j ACCEPT
     sudo iptables -A INPUT -i br0 -j ACCEPT
     sudo iptables -A FORWARD -i br0 -j ACCEPT
     
