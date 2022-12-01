@@ -4,12 +4,36 @@ This testned is based on a 2 node K8s cluster using kubeadm on QEMU/KVM-based VM
 
 ![K8s cluster](img/rina_k8s_testbed.png)
 
+> Note:
+> This testbed was designed to be used with the RINA CNI Plugin. However, it can be used with any other CNI plugin, and can be easily adapted to other K8s deployments. To do so, only change the `CNI installation` Section on `deploy_k8s_node.sh`
+>
+> Note 2:
+> The `deploy_k8s_node.sh` script is a bit hardcoded for deploying two nodes. However, it can be easily adapted to deploy more nodes.
+
+## Dependencies
+
+QEMU/KVM. I use a netmap-enabled fork of QEMU/KVM, although netmap is not used in this testbed. However, it's the one I always use:
+
+```bash
+git clone https://github.com/netmap-unipi/qemu
+cd qemu
+./configure --target-list=x86_64-softmmu --enable-kvm --disable-werror --enable-netmap
+make
+sudo make install
+```
+
 ## Instructions
 
 Let's first build the master VM:
 
 ```bash
 ./build.sh vm1 tap
+```
+
+On another shell start building the worker VM:
+
+```bash
+./build.sh vm2 tap
 ```
 
 This will download for you the ubuntu 20.04 cloud image, create a VM, and install the necessary packages.
@@ -26,74 +50,22 @@ You can connect to it with: ssh ubuntu@localhost -p 2021
 Inside the vm, clone the repo and run the script for deploying a k8s master node:
 
 ```bash
-(vm) git clone https://github.com/sergio-gimenez/qemu-kvm-wrapper.git
-(vm) qemu-kvm-wrapper/deploy_master_k8s_tesbed.sh
-```
-
-This will change your hostaname (likely `ubuntu`) to a new one `master`, and will shutdown the VM.
-
-Now, let's boot again the VM:
-
-```bash
-./start.sh vm1 tap
-```
-
-Wait a few seconds to make sure it starts properly and then ssh into it:
-
-```bash
-ssh ubuntu@localhost -p 2021
-```
-
-Inside the vm, run the script to deploy ythe k8s node again:
-
-```bash
-(vm) qemu-kvm-wrapper/deploy_master_k8s_tesbed.sh
+git clone https://github.com/sergio-gimenez/qemu-kvm-wrapper.git
+qemu-kvm-wrapper/deploy_k8s_node.sh master 1
 ```
 
 While `vm1` is installing k8s, let's do the same for `vm2`, which will be the worker node.
 
-Let's build the VM `vm2`:
+Like before, inside the vm, clone the repo and run the script for deploying a k8s worker node:
 
 ```bash
-./build.sh vm2 tap
-```
-
-Like before, wait a bit, and then when you see the prompt, ssh into it:
-
-```bash
-ssh ubuntu@localhost -p 2022
-```
-
-Inside the vm, clone the repo and run the script for deploying a k8s worker node:
-
-```bash
-(vm) $ git clone https://github.com/sergio-gimenez/qemu-kvm-wrapper.git
-(vm) $ qemu-kvm-wrapper/deploy_worker_k8s_tesbed.sh
-```
-
-This will change your hostaname (likely `ubuntu`) to a new one `worker`, and will shutdown the VM.
-
-Now, let's boot again the VM:
-
-```bash
-./start.sh vm2 tap
-```
-
-And ssh into it:
-
-```bash
-ssh ubuntu@localhost -p 2022
-```
-
-Inside the vm, run the script to deploy ythe k8s node again:
-
-```bash
-(vm) qemu-kvm-wrapper/deploy_worker_k8s_tesbed.sh
+git clone https://github.com/sergio-gimenez/qemu-kvm-wrapper.git
+qemu-kvm-wrapper/deploy_worker_k8s_tesbed.sh
 ```
 
 Now, wait till k8s is installed in both VMs.
 
-Meanwhile, in the physical host, let's create a bridge and add the VMs to it:
+Meanwhile, in the **physical host**, let's create a bridge and add the VMs to it:
 
 ```bash
 ./bridge.sh up
