@@ -108,7 +108,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 if [ "$node_name" == "master" ]; then
     # Initialize the cluster
     # Initialize the master node with kubeadm, specifiying apiserver in ens4
-    sudo kubeadm init --apiserver-advertise-address="$node_ip" --pod-network-cidr=10.240.0.0/16
+    sudo kubeadm init --apiserver-advertise-address="$node_ip" --pod-network-cidr=10.240.0.0/16 --control-plane-endpoint 84.88.40.202
     
     # Once kubeadm has bootstraped the K8s cluster, set proper access to the cluster from the CP/master node
     mkdir -p "$HOME"/.kube
