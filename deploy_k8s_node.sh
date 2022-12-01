@@ -37,6 +37,17 @@ sudo ifconfig ens4 up
 node_ip="10.10.0.1$one_digit_id"
 sudo ifconfig ens4 "$node_ip/24"
 
+# # Compile and load netmap module
+
+git clone https://github.com/luigirizzo/netmap.git
+cd netmap || exit
+./configure --no-drivers
+make
+sudo make install
+sudo depmod -a
+sudo modprobe netmap
+cd ..
+
 ###########################
 # Containerd Installation #
 ###########################
