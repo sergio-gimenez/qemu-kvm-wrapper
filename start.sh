@@ -55,7 +55,7 @@ else
 fi
 
 # Boot the vm
-# set -x
+set -x
 sudo qemu-system-x86_64 \
 "$CUR_PATH"/"$VM_NAME".img \
 -m 8G --enable-kvm -pidfile $VM_NAME.pid \
