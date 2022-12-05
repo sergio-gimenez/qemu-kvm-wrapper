@@ -18,7 +18,6 @@ kill_qemu() {
 files=(
     "vm1.pid"
     "vm2.pid"
-    "vm3.pid"
 )
 for file in "${files[@]}"; do
     if [ -f "$file" ]; then
