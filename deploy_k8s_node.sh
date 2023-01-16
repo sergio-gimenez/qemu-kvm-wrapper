@@ -133,6 +133,7 @@ while true; do
         sudo apt install python3-pip -y
         pip install pyroute2
         rina_cni="rina-cni.py"
+        sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
         break
         ;;
     *) echo "Please answer 'bash' or 'python'." ;;
