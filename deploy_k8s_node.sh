@@ -136,6 +136,7 @@ while true; do
         ;;
     [python]*)
         sudo apt install python3-pip -y
+        sudo pip install pyroute2
         pip install pyroute2
         rina_cni="rina-cni.py"
         sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
