@@ -139,7 +139,9 @@ while true; do
         sudo pip install colorlog pyroute2
         rina_cni="/python/rina-cni.py"
         sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
-        sudo sed -i 's/rina-cni/python/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
+        # Subsitute "rina-cni" with "/python&rina-cni.py" in the configuration file (my-cni-demo.conf)
+        sudo sed -i 's/rina-cni/python\/rina-cni.py/g' /etc/cni/net.d/my-cni-demo_$node_name.conf
+
         break
         ;;
     *) echo "Please answer 'bash' or 'python'." ;;
