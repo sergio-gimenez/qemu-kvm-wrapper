@@ -126,13 +126,13 @@ while true; do
     read -p "Do you wish to install The python version or the bash version [bash/python]? " bp
     case $bp in
     [bash]*)
-        rina_cni="rina_cni"
+        rina_cni="rina-cni"
         break
         ;;
     [python]*)
         sudo apt install python3-pip -y
         pip install pyroute2
-        rina_cni="rina_cni.py"
+        rina_cni="rina-cni.py"
         break
         ;;
     *) echo "Please answer 'bash' or 'python'." ;;
