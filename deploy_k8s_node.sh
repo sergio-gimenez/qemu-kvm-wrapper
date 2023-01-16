@@ -136,11 +136,10 @@ while true; do
         ;;
     [python]*)
         sudo apt install python3-pip -y
-        sudo pip install pyroute2
-        pip install pyroute2
-        rina_cni="rina-cni.py"
+        sudo pip install colorlog pyroute2
+        rina_cni="/python/rina-cni.py"
         sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
-        sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
+        sudo sed -i 's/rina-cni/python/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
         break
         ;;
     *) echo "Please answer 'bash' or 'python'." ;;
