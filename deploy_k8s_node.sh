@@ -122,17 +122,23 @@ fi
 # CNI installation #
 ####################
 
+# Install RINA CNI
+git clone https://github.com/sergio-gimenez/rina-cni-plugin.git
+
 while true; do
     read -p "Do you wish to install The python version or the bash version [bash/python]? " bp
     case $bp in
     [bash]*)
         rina_cni="rina-cni"
+        # Copy the custom configuration file
+        sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
         break
         ;;
     [python]*)
         sudo apt install python3-pip -y
         pip install pyroute2
         rina_cni="rina-cni.py"
+        sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
         sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
         break
         ;;
@@ -140,14 +146,8 @@ while true; do
     esac
 done
 
-# Install RINA CNI
-git clone https://github.com/sergio-gimenez/rina-cni-plugin.git
-
 # Copy the RINA plugin into CNI plugins directory
 sudo cp rina-cni-plugin/$rina_cni /opt/cni/bin
-
-# Copy the custom configuration file
-sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
 
 # Set few Iptables rules to enable propper connectivity
 sudo rina-cni-plugin/demo/init_$node_name.sh
