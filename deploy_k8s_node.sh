@@ -109,7 +109,7 @@ if [ "$node_name" == "master" ]; then
     # Initialize the cluster
     # Initialize the master node with kubeadm, specifiying apiserver in ens4
     sudo kubeadm init --apiserver-advertise-address="$node_ip" --pod-network-cidr=10.240.0.0/16
-    
+
     # Once kubeadm has bootstraped the K8s cluster, set proper access to the cluster from the CP/master node
     mkdir -p "$HOME"/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -121,6 +121,9 @@ fi
 ####################
 # CNI installation #
 ####################
+
+sudo apt install python3-pip -y
+pip install pyroute2
 
 # Install RINA CNI
 git clone https://github.com/sergio-gimenez/rina-cni-plugin.git
