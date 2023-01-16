@@ -132,18 +132,14 @@ while true; do
         rina_cni="rina-cni"
         # Copy the custom configuration file
         sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
-        sudo cp rina-cni-plugin/$rina_cni /opt/cni/bin
         break
         ;;
     [python]*)
         sudo apt install python3-pip -y
         sudo pip install colorlog pyroute2
-        rina_cni="/python/rina-cni.py"
+        rina_cni="rina-cni.py"
         sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
-        # Subsitute "rina-cni" with "/python&rina-cni.py" in the configuration file (my-cni-demo.conf)
-        sudo sed -i 's/rina-cni/python\/rina-cni.py/g' /etc/cni/net.d/my-cni-demo_$node_name.conf
-        sudo cp -r rina-cni-plugin/python/ /opt/cni/bin
-
+        sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
         break
         ;;
     *) echo "Please answer 'bash' or 'python'." ;;
@@ -151,6 +147,7 @@ while true; do
 done
 
 # Copy the RINA plugin into CNI plugins directory
+sudo cp rina-cni-plugin/$rina_cni /opt/cni/bin
 
 # Set few Iptables rules to enable propper connectivity
 sudo rina-cni-plugin/demo/init_$node_name.sh
