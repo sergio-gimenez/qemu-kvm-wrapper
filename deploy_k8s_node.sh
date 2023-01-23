@@ -70,8 +70,13 @@ EOF
 # Apply sysctl parameters
 sudo sysctl --system
 
-# Install containerd
-sudo apt-get update && sudo apt-get install -y containerd
+# # Install containerd
+# sudo apt-get update && sudo apt-get install -y containerd
+wget https://github.com/containerd/containerd/releases/download/v1.6.15/containerd-1.6.15-linux-amd64.tar.gz
+tar xvf containerd-1.6.15-linux-amd64.tar.gz
+sudo systemctl stop containerd
+sudo cp bin/* /usr/local/bin/
+sudo systemctl start containerd
 ## Set the cgroup driver for runc to systemd
 
 # Create the containerd configuration file (containerd by default takes the config looking
@@ -87,6 +92,8 @@ sudo systemctl restart containerd
 # disable swap
 sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+
 
 ###########################
 # Kubernetes installation #
