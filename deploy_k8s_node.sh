@@ -12,7 +12,7 @@ else
 fi
 
 one_digit_id=$2
-K8S_VERSION=1.25.0-00
+K8S_VERSION=1.26.0-00
 
 # check whether user had supplied -h or --help . If yes display usage
 if [[ ($# == "--help") || $# == "-h" ]]; then
@@ -39,14 +39,14 @@ sudo ifconfig ens4 "$node_ip/24"
 
 # # Compile and load netmap module
 
-git clone https://github.com/luigirizzo/netmap.git
-cd netmap || exit
-./configure --no-drivers
-make
-sudo make install
-sudo depmod -a
-sudo modprobe netmap
-cd ..
+# git clone https://github.com/luigirizzo/netmap.git
+# cd netmap || exit
+# ./configure --no-drivers
+# make
+# sudo make install
+# sudo depmod -a
+# sudo modprobe netmap
+# cd ..
 
 ###########################
 # Containerd Installation #
@@ -71,19 +71,20 @@ EOF
 sudo sysctl --system
 
 # # Install containerd
-# sudo apt-get update && sudo apt-get install -y containerd
-wget https://github.com/containerd/containerd/releases/download/v1.6.15/containerd-1.6.15-linux-amd64.tar.gz
-tar xvf containerd-1.6.15-linux-amd64.tar.gz
-sudo systemctl stop containerd
-sudo cp bin/* /usr/local/bin/
-sudo systemctl start containerd
-## Set the cgroup driver for runc to systemd
+# sudo apt-get update && sudo apt-get install -y containerd=1.3.3
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+sudo apt update
+sudo apt install containerd.io
 
+## Set the cgroup driver for runc to systemd
 # Create the containerd configuration file (containerd by default takes the config looking
 # at /etc/containerd/config.toml)
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
-# sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/' /etc/containerd/config.toml
+sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/' /etc/containerd/config.toml
 # sudo rm /etc/containerd/config.toml
 
 # Restart containerd with the new configuration
@@ -92,8 +93,6 @@ sudo systemctl restart containerd
 # disable swap
 sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-
-
 
 ###########################
 # Kubernetes installation #
