@@ -141,7 +141,7 @@ while true; do
         ;;
     [python]*)
         sudo apt install python3-pip -y
-        sudo pip install colorlog pyroute2
+        sudo pip install colorlog pyroute2 kubernetes
         rina_cni="rina-cni.py"
         sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
         sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
