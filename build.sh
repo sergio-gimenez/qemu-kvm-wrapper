@@ -122,7 +122,7 @@ sudo qemu-system-x86_64 \
 -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME",id=data1"$IFUP_SCRIPTS" &
 
 echo "Waiting the VM to boot..."
-sleep 35
+sleep 38
 
 
 echo "VM $VM_NAME has been properly built"
