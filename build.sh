@@ -41,7 +41,7 @@ checkdep() {
     echo "missing $exe."
     echo "  It can be installed in package: $package"
     [ -n "$upstream" ] &&
-    echo "  Upstream project url: $upstream"
+        echo "  Upstream project url: $upstream"
     return 1
 }
 
@@ -62,9 +62,9 @@ fi
 # Check if base image exists
 if [ ! -f "${CUR_PATH}/${CLOUD_BASE_IMG}" ]; then
     echo "Base image ${CLOUD_BASE_IMG} not found in ${CUR_PATH}, donwloading..."
-    
+
     wget -O "${CUR_PATH}/${CLOUD_BASE_IMG}" \
-    "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
+        "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
 fi
 
 # Create an overlay image
@@ -83,8 +83,8 @@ if [ "$2" == "tap" ]; then
     NET_BACKEND="tap"
     BACK_IFNAME=""$VM_NAME".cp"
     IFUP_SCRIPTS=",script=no,downscript=no"
-    
-    elif [ "$2" == "netmap" ]; then
+
+elif [ "$2" == "netmap" ]; then
     # Make sure netmap module is loaded
     if ! lsmod | grep "netmap" &>/dev/null; then
         echo "netmap module is not loaded. Loading."
@@ -97,15 +97,19 @@ if [ "$2" == "tap" ]; then
     fi
     NET_FRONTEND="ptnet-pci"
     NET_BACKEND="netmap"
-    
+
     if [ ! -n "$BACK_IFNAME" ]; then
-        BACK_IFNAME="vale2:1}2"
+        if [ "$NUM" == "1" ]; then
+            BACK_IFNAME="vale1:1{1"
+        elif [ "$NUM" == "2" ]; then
+            BACK_IFNAME="vale1:1}1"
+        fi
         echo "Backend interface name not specified, using default: $BACK_IFNAME"
     fi
     IFUP_SCRIPTS=",passthrough=on" # The comma here is on purpose and mandatory
-    
+
 else
-    
+
     echo "Unknown network type"
     display_usage
     exit 1
@@ -113,19 +117,16 @@ fi
 
 # Boot the vm
 sudo qemu-system-x86_64 \
--hda "$CUR_PATH"/"$VM_NAME".img \
--hdb "$CUR_PATH"/seed_"$VM_NAME".img \
--m 8G --enable-kvm -pidfile $VM_NAME.pid \
--cpu host -smp 4 \
--serial file:"$VM_NAME".log \
--device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22,hostfwd=tcp::300"$NUM"-:8000 \
--device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME",id=data1"$IFUP_SCRIPTS" &
+    -hda "$CUR_PATH"/"$VM_NAME".img \
+    -hdb "$CUR_PATH"/seed_"$VM_NAME".img \
+    -m 8G --enable-kvm -pidfile $VM_NAME.pid \
+    -cpu host -smp 4 \
+    -serial file:"$VM_NAME".log \
+    -device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22,hostfwd=tcp::300"$NUM"-:8000 \
+    -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME",id=data1"$IFUP_SCRIPTS" &
 
 echo "Waiting the VM to boot..."
 sleep 40
 
-
 echo "VM $VM_NAME has been properly built"
 echo "You can connect to it with: ssh ubuntu@localhost -p 202$NUM"
-
-
