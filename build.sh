@@ -23,7 +23,7 @@ if [ $# -le 1 ]; then
     exit 1
 fi
 
-CLOUD_BASE_IMG="ubuntu-20.04-server-cloudimg-amd64.img"
+CLOUD_BASE_IMG="ubuntu-22.04-server-cloudimg-amd64.img"
 CUR_PATH=$(pwd)
 MISSING=""
 FOUND=""
@@ -64,13 +64,13 @@ if [ ! -f "${CUR_PATH}/${CLOUD_BASE_IMG}" ]; then
     echo "Base image ${CLOUD_BASE_IMG} not found in ${CUR_PATH}, donwloading..."
 
     wget -O "${CUR_PATH}/${CLOUD_BASE_IMG}" \
-        "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
+        "https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64.img"
 fi
 
 # Create an overlay image
 qemu-img create -f qcow2 -b "$CLOUD_BASE_IMG" "$VM_NAME".img
 
-qemu-img resize "$VM_NAME".img +22G
+qemu-img resize "$VM_NAME".img +40G
 
 # Build seed image with the user data and the networking config
 # TODO This net conf is not working
@@ -119,8 +119,8 @@ fi
 sudo qemu-system-x86_64 \
     -hda "$CUR_PATH"/"$VM_NAME".img \
     -hdb "$CUR_PATH"/seed_"$VM_NAME".img \
-    -m 8G --enable-kvm -pidfile $VM_NAME.pid \
-    -cpu host -smp 4 \
+    -m 16G --enable-kvm -pidfile $VM_NAME.pid \
+    -cpu host -smp 16 \
     -serial file:"$VM_NAME".log \
     -device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22,hostfwd=tcp::300"$NUM"-:8000 \
     -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME",id=data1"$IFUP_SCRIPTS" &
