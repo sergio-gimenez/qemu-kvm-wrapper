@@ -1,7 +1,7 @@
 #!/bin/bash
 
 display_usage() {
-    echo -e "\nUsage: $0 [vm1 vm2 vm3] [tap ptnet]\n"
+    echo -e "\nUsage: $0 [vm1 vm2 vm3] [tap netmap]\n"
 }
 
 # check whether user had supplied -h or --help . If yes display usage
@@ -97,17 +97,17 @@ elif [ "$2" == "netmap" ]; then
     fi
     NET_FRONTEND="ptnet-pci"
     NET_BACKEND="netmap"
-
     if [ ! -n "$BACK_IFNAME" ]; then
         if [ "$NUM" == "1" ]; then
-            BACK_IFNAME="vale1:1{1"
+            BACK_IFNAME_1="vale1:1{1"
+            BACK_IFNAME_2="vale1:2{1"
         elif [ "$NUM" == "2" ]; then
-            BACK_IFNAME="vale1:1}1"
+            BACK_IFNAME_1="vale1:}1"
+            BACK_IFNAME_2="vale2:}1"
         fi
         echo "Backend interface name not specified, using default: $BACK_IFNAME"
     fi
-    IFUP_SCRIPTS=",passthrough=on" # The comma here is on purpose and mandatory
-
+    IFUP_SCRIPTS=",passthrough=on"
 else
 
     echo "Unknown network type"
@@ -116,14 +116,15 @@ else
 fi
 
 # Boot the vm
+set -x
 sudo qemu-system-x86_64 \
-    -hda "$CUR_PATH"/"$VM_NAME".img \
-    -hdb "$CUR_PATH"/seed_"$VM_NAME".img \
-    -m 16G --enable-kvm -pidfile $VM_NAME.pid \
-    -cpu host -smp 16 \
+    "$CUR_PATH"/"$VM_NAME".img \
+    -m 8G --enable-kvm -pidfile $VM_NAME.pid \
+    -cpu host -smp 4 \
     -serial file:"$VM_NAME".log \
     -device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22,hostfwd=tcp::300"$NUM"-:8000 \
-    -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME",id=data1"$IFUP_SCRIPTS" &
+    -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME_1",id=data1"$IFUP_SCRIPTS" \
+    -device "$NET_FRONTEND",netdev=data2,mac=00:0a:0a:0a:0"$NUM":02, -netdev $NET_BACKEND,ifname="$BACK_IFNAME_2",id=data2"$IFUP_SCRIPTS" &
 
 echo "Waiting the VM to boot..."
 sleep 40
