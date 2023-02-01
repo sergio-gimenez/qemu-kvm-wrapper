@@ -50,10 +50,10 @@ elif [ "$2" == "netmap" ]; then
     if [ ! -n "$BACK_IFNAME" ]; then
         if [ "$NUM" == "1" ]; then
             BACK_IFNAME_1="vale1:1{1"
-            BACK_IFNAME_2="vale1:2{1"
+            BACK_IFNAME_2="vale2:1{1"
         elif [ "$NUM" == "2" ]; then
-            BACK_IFNAME_1="vale1:}1"
-            BACK_IFNAME_2="vale2:}1"
+            BACK_IFNAME_1="vale1:1}1"
+            BACK_IFNAME_2="vale2:1}1"
         fi
         echo "Backend interface name not specified, using default: $BACK_IFNAME"
     fi
