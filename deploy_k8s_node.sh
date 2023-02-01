@@ -32,11 +32,6 @@ set -x
 sudo apt-get update
 sudo apt-get install net-tools build-essential jq bridge-utils -y
 
-# Set up the interface
-sudo ifconfig ens4 up
-node_ip="10.10.0.1$one_digit_id"
-sudo ifconfig ens4 "$node_ip/24"
-
 # Compile and load netmap module
 git clone https://github.com/luigirizzo/netmap.git
 cd netmap || exit
@@ -46,6 +41,11 @@ sudo make install
 sudo depmod -a
 sudo modprobe netmap
 cd ..
+
+# Set up the interface
+sudo ifconfig ens4 up
+node_ip="10.10.0.1$one_digit_id"
+sudo ifconfig ens4 "$node_ip/24"
 
 ###########################
 # Containerd Installation #
