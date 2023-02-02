@@ -23,6 +23,8 @@ if [ $# -le 1 ]; then
     exit 1
 fi
 
+VM_RAM_GB=12
+CPU_CORES=16
 CUR_PATH=$(pwd)
 VM_NAME="$1"
 NUM="${VM_NAME: -1}"
@@ -31,7 +33,7 @@ BACK_IFNAME="$3"
 if [ "$2" == "tap" ]; then
     NET_FRONTEND="virtio-net-pci"
     NET_BACKEND="tap"
-    BACK_IFNAME=""$VM_NAME".cp"
+    BACK_IFNAME="$VM_NAME".cp
     IFUP_SCRIPTS=",script=no,downscript=no"
 
 elif [ "$2" == "netmap" ]; then
@@ -69,8 +71,8 @@ fi
 set -x
 sudo qemu-system-x86_64 \
     "$CUR_PATH"/"$VM_NAME".img \
-    -m 8G --enable-kvm -pidfile $VM_NAME.pid \
-    -cpu host -smp 4 \
+    -m "$VM_RAM_GB"G --enable-kvm -pidfile "$VM_NAME".pid \
+    -cpu host -smp "$CPU_CORES" \
     -serial file:"$VM_NAME".log \
     -device e1000,netdev=mgmt,mac=00:AA:BB:CC:01:99 -netdev user,id=mgmt,hostfwd=tcp::202"$NUM"-:22,hostfwd=tcp::300"$NUM"-:8000 \
     -device "$NET_FRONTEND",netdev=data1,mac=00:0a:0a:0a:0"$NUM":01, -netdev $NET_BACKEND,ifname="$BACK_IFNAME_1",id=data1"$IFUP_SCRIPTS" \
