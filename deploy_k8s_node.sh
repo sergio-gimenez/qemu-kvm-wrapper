@@ -33,7 +33,7 @@ sudo apt-get update
 sudo apt-get install net-tools build-essential jq bridge-utils -y
 
 # Compile and load netmap module
-git clone git@github.com:sergio-gimenez/rina-cni-plugin.git
+git clone https://github.com/luigirizzo/netmap.git
 cd netmap || exit
 ./configure --no-drivers --enable-ptnetmap
 make
@@ -128,7 +128,7 @@ fi
 ####################
 
 # Install RINA CNI
-git clone https://github.com/sergio-gimenez/rina-cni-plugin.git
+git clone git clone git@github.com:sergio-gimenez/rina-cni-plugin.git
 
 while true; do
     read -p "Do you wish to install The python version or the bash version [bash/python]? " bp
