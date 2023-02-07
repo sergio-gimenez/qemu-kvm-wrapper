@@ -35,7 +35,7 @@ sudo apt-get install net-tools build-essential jq bridge-utils -y
 # Compile and load netmap module
 git clone https://github.com/luigirizzo/netmap.git
 cd netmap || exit
-./configure --no-drivers
+./configure --no-drivers --enable-ptnetmap
 make
 sudo make install
 sudo depmod -a
