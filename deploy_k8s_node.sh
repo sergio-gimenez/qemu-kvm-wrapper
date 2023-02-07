@@ -33,7 +33,7 @@ sudo apt-get update
 sudo apt-get install net-tools build-essential jq bridge-utils -y
 
 # Compile and load netmap module
-git clone https://github.com/luigirizzo/netmap.git
+git clone git@github.com:sergio-gimenez/rina-cni-plugin.git
 cd netmap || exit
 ./configure --no-drivers --enable-ptnetmap
 make
