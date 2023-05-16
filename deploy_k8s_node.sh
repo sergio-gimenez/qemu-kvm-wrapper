@@ -1,17 +1,35 @@
 #!/bin/bash
 
 display_usage() {
-    echo -e "\nUsage: $0 [master worker] [1 2]\n"
+    echo -e "\nUsage: $0 [master worker] [1 2] [cluster_iface_name]\n"
+    echo -e "Example: $0 master 1 enps89s0\n"
 }
 
 if [[ ("$1" == "master" || "$1" == "worker") ]]; then
     node_name=$1
 else
     echo "Please specify the node name as master or worker"
+    display_usage
     exit 1
 fi
 
-one_digit_id=$2
+if [[ ("$2" == "1" || "$2" == "2") ]]; then
+    one_digit_id=$2
+else
+    echo "Please specify the node id as 1 or 2"
+    display_usage
+    exit 1
+fi
+
+valid_ifnames=("ens4" "enp89s0")
+if [[ " ${valid_ifnames[@]} " =~ " ${3} " ]]; then
+    cluster_iface_name=$3
+else
+    echo "Please specify the cluster interface name as ens4 or enp89s0"
+    display_usage
+    exit 1
+fi
+
 K8S_VERSION=1.26.0-00
 
 # check whether user had supplied -h or --help . If yes display usage
@@ -28,24 +46,26 @@ set -x
 # Install Prerequisites   #
 ###########################
 
-# Install ifconfig, a c compiler, jq, and bridge
-sudo apt-get update
-sudo apt-get install net-tools build-essential jq bridge-utils -y
+if [[ cluster_iface_name == "ens4" ]]; then
+    # Install ifconfig, a c compiler, jq, and bridge
+    sudo apt-get update
+    sudo apt-get install net-tools build-essential jq bridge-utils -y
 
-# Compile and load netmap module
-git clone https://github.com/luigirizzo/netmap.git
-cd netmap || exit
-./configure --no-drivers --enable-ptnetmap
-make
-sudo make install
-sudo depmod -a
-sudo modprobe netmap
-cd ..
+    # Compile and load netmap module
+    git clone https://github.com/luigirizzo/netmap.git
+    cd netmap || exit
+    ./configure --no-drivers --enable-ptnetmap
+    make
+    sudo make install
+    sudo depmod -a
+    sudo modprobe netmap
+    cd ..
+fi
 
 # Set up the interface
-sudo ifconfig ens4 up
+sudo ifconfig $cluster_iface_name up
 node_ip="10.10.0.1$one_digit_id"
-sudo ifconfig ens4 "$node_ip/24"
+sudo ifconfig $cluster_iface_name "$node_ip/24"
 
 ###########################
 # Containerd Installation #
@@ -127,32 +147,45 @@ fi
 # CNI installation #
 ####################
 
-# Install RINA CNI
-git clone git@github.com:sergio-gimenez/rina-cni-plugin.git
-
 while true; do
-    read -p "Do you wish to install The python version or the bash version [bash/python]? " bp
-    case $bp in
-    [bash]*)
-        rina_cni="rina-cni"
-        # Copy the custom configuration file
-        sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
+    read -p "Do you wish to install Flannel CNI or RINA CNI [flannel/rina]? " fr
+    case $fr in
+    [flannel]*)
+        # Install Flannel CNI
+        sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
         break
         ;;
-    [python]*)
-        sudo apt install python3-pip -y
-        sudo pip install colorlog pyroute2 kubernetes
-        rina_cni="rina-cni.py"
-        sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
-        sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
+    [rina]*)
+        # Install RINA CNI
+        git clone git@github.com:sergio-gimenez/rina-cni-plugin.git
+
+        while true; do
+            read -p "Do you wish to install The python version or the bash version [bash/python]? " bp
+            case $bp in
+            [bash]*)
+                rina_cni="rina-cni"
+                # Copy the custom configuration file
+                sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
+                break
+                ;;
+            [python]*)
+                sudo apt install python3-pip -y
+                sudo pip install colorlog pyroute2 kubernetes
+                rina_cni="rina-cni.py"
+                sudo cp rina-cni-plugin/demo/my-cni-demo_$node_name.conf /etc/cni/net.d/
+                sudo sed -i 's/rina-cni/rina-cni.py/' /etc/cni/net.d/my-cni-demo_$node_name.conf
+                # Copy the RINA plugin into CNI plugins directory
+                sudo cp rina-cni-plugin/$rina_cni /opt/cni/bin
+
+                # Set few Iptables rules to enable proper connectivity
+                sudo rina-cni-plugin/demo/init_$node_name.sh
+                break
+                ;;
+            *) echo "Please answer 'bash' or 'python'." ;;
+            esac
+        done
         break
         ;;
-    *) echo "Please answer 'bash' or 'python'." ;;
+    *) echo "Please answer 'flannel' or 'rina'." ;;
     esac
 done
-
-# Copy the RINA plugin into CNI plugins directory
-sudo cp rina-cni-plugin/$rina_cni /opt/cni/bin
-
-# Set few Iptables rules to enable propper connectivity
-sudo rina-cni-plugin/demo/init_$node_name.sh
